@@ -1,0 +1,22 @@
+git clone -b feature/php7 https://github.com/sqmk/pecl-jsmin.git
+
+then you need to follow the instructions at 
+https://github.com/sqmk/pecl-jsmin/tree/feature/php7
+
+specifically:
+$ phpize
+$ ./configure
+$ sudo make install clean
+
+After running this check the /usr/lib/php/<buildnumber>/ directory and see if it has jsmin.so. If not, look in the modules directory (should be in the directory where you just ran make) and, if you have jsmin.so, copy it over.  If you don't, try make install
+
+To enable jsmin first add a jsmin.ini file to mod-available and enter
+extension="jsmin.so"
+
+Then run 
+sudo phpenmod jsmin
+
+and finally restart php-fpm (if you're using it) with 
+sudo service restart php<version>-fpm
+
+check phpinfo to ensure jsmin is available.

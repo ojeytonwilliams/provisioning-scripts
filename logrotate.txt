@@ -1,0 +1,14 @@
+If you want to set global configuration properties for logrotate, it's possible to do so by adding a file to /etc/logrotate.d/ (rather than by altering /etc/logrotate.conf).
+
+However, logrotate reads and applies the rules in alphabetical order (yes, you read that right), so, for changes to be global, the file they appear in has to come first in the alphabet.  Daft, but true.
+
+Hence 0-global-encrypt
+
+Also, make sure the permission are correct and that the gnupg PUBLIC KEY NOT PRIVATE is in ~/.gnupg
+
+Do a dry run: sudo logrotate -d -f /etc/logrotate.conf
+and a test run: sudo logrotate -f /etc/logrotate.conf
+
+to check that everything looks right and that everything actually is, respectively.
+
+ALSO, update to version 3.11.0, since that version is known to work.  3.8.7, for example, can be confused and not rotate the .n files and, instead, create an endless pile of .backups.  Yikes!

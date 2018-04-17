@@ -1,0 +1,9 @@
+max_connections = 50
+
+key_buffer = 25M
+
+max_allowed_packet = 1M
+
+thread_stack = 128K
+
+table_cache = 25

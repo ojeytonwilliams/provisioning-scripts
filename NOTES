@@ -1,0 +1,55 @@
+Slow loris
+
+I've been trying to use mod_qos to protect my server from slowloris attacks.
+The issue is that it appears to simply not work with mpm_event and, despite claming otherwise, does (at least somewhat) work with mpm_prefork.  The 'middle ground' is mpm_worker, which is threaded and does seem to work with qos.  From what I've read, in general, event is the way to go since it's the most recent and (presumably) the most sophisticated.  Not sure what problems I'm creating for myself if I don't use it.
+
+FPM
+
+Read this
+https://askubuntu.com/questions/918596/configuring-apache-2-4-with-fastcgi-on-ubuntu-16-04-what-do-i-do-with-php7-0-f
+
+Setting up the DB
+
+example script:
+
+--
+export DEBIAN_FRONTEND="noninteractive"
+
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password password rootpw"
+sudo debconf-set-selections <<< "mysql-server mysql-server/root_password_again password rootpw"
+
+sudo apt-get install -y mysql-server
+
+mysql_secure_installation
+--
+
+Try this out.  See if it sets up the server correctly and what happens when you run mysql_secure_installation remotely.  Chances are you have to run it on that machine, but it's worth a look!
+
+mod_rewrite
+
+Is no longer strictly necessary (as long as you have apache ~2.4), but *might be a good idea anyway.  
+
+--
+
+Email server
+
+Make sure that (amongst other things) you chage postfix's myhostname to your domain!
+
+UMASK
+
+It's probably best to make UMASK stricter, so edit the UMASK value in /etc/login.defs to 027 at the least.
+
+Postfix
+
+In order to get postfix to encrypt (using TLS) you need to tell it how enthusiastic it should be about requiring TLS and finally it's probably good practice (though it may not be necessary) to point postfix at your cert directory, so that it can ensure that google are who they say they are.
+
+smtp_tls_security_level = may
+smtp_tls_CApath = /etc/ssl/certs
+
+security_level = may is probably smart, because it's (arguably) better to default to sending unecrypted mail rather than no mail at all.
+
+Apache and logrotate quirks
+
+Using apachectl is *mostly* fine, but does not play well with logrotate.  Reason being, logrotate relies on the result of /etc/init.d/apache2 status > /dev/null which (if I understand correctly) means that if the status exits with zero (i.e. it's running and everything is fine) then it reloads apache.  That was a sentence.  In short, if apache is running *AND* /etc/init.d/apache2 can verify this, then logrotate will reload apache.  
+
+Here's the problem.  If you use apachectl to stop/start apache something can go awry and means /et/init.d/apache2 status will fail.  This means apache is never restarted and you get on gigantic log file.  Ooops.

@@ -1,0 +1,8 @@
+If you have a static ip, it's a good idea to add a file, jail.local to 
+/etc/fail2ban with
+
+[DEFAULT]
+
+ignoreip = 127.0.0.1 your.ip.address.here
+
+Also, a fairly minimal set of jails is shown in local.conf, in this dir.  Put that in /etc/fail2ban/jail.d

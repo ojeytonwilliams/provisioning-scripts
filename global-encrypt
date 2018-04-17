@@ -1,0 +1,4 @@
+compresscmd /usr/bin/gpg2
+compressoptions --encrypt -r ramnode 
+compressext .gpg
+
